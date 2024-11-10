@@ -1,0 +1,21 @@
+.node__root > circle {
+    fill: red;
+    padding:20;
+  }
+  
+  .node__branch > circle {
+    fill: yellow;
+    padding:20;
+
+  }
+  
+  .node__leaf > circle {
+    fill: green;
+    /* Let's also make the radius of leaf nodes larger */
+    padding:20;
+    r: 15;
+  }
+
+/* body {
+  fill:white;
+} */

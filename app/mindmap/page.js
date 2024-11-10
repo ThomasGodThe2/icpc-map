@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import Tree from 'react-d3-tree';
 import './MindmapPage.css';
+import {UserProvider} from "@auth0/nextjs-auth0/client";
 
 export default function MindmapPage() {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
@@ -49,7 +50,7 @@ export default function MindmapPage() {
   }
 
   return (
-    
+    <UserProvider>
       <div ref={treeContainer} style={containerStyles}>
       <h1 style={{ textAlign: 'center', color: '#333' }}>ICPC Mindmap</h1>
       <Tree
@@ -65,7 +66,7 @@ export default function MindmapPage() {
         leafNodeClassName="node__leaf"
       />
     </div>
-    
+    </UserProvider>
     
   );
 }
