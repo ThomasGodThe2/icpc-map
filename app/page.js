@@ -7,7 +7,7 @@ import "./MindmapPage.css";
 export default function MindmapPage() {
   const [translate, setTranslate] = useState({ x: 0, y: 0 });
   const [mindmapData, setMindmapData] = useState(null);
-  const [selectedNode, setSelectedNode] = useState(null); // For selected node info
+  const [selectedNode, setSelectedNode] = useState(null);
   const treeContainer = useRef(null);
   const cardRef = useRef(null);
 
@@ -37,55 +37,44 @@ export default function MindmapPage() {
     }
   }, []);
 
-  // Close the card if clicked outside
-  useEffect(() => {
-    function handleOutsideClick(event) {
-      if (cardRef.current && !cardRef.current.contains(event.target)) {
-        setSelectedNode(null); // Close the card
-      }
-    }
-
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, []);
-
   const handleNodeClick = (nodeData) => {
-    setSelectedNode(nodeData); // Set the selected node
+    setSelectedNode(nodeData);
   };
 
   const containerStyles = {
     width: "100%",
     height: "100vh",
+    position: "relative",
   };
-
-  // Prevent rendering on the server
-  if (typeof window === "undefined") {
-    return null;
-  }
 
   if (!mindmapData) {
     return <p>Loading mindmap...</p>;
   }
 
   return (
-    <div ref={treeContainer} style={containerStyles}>
-      <h1 style={{ textAlign: "center", color: "#333" }}>ICPC Mindmap</h1>
-      <Tree
-        data={mindmapData}
-        orientation="vertical"
-        pathFunc="diagonal"
-        translate={translate}
-        zoomable
-        pan
-        collapsible
-        rootNodeClassName="node__root"
-        branchNodeClassName="node__branch"
-        leafNodeClassName="node__leaf"
-        onNodeClick={(nodeDatum) => handleNodeClick(nodeDatum)} // Handle node clicks
-      />
+    <div style={containerStyles}>
+      {/* Tree container */}
+      <div
+        ref={treeContainer}
+        style={{ width: "100%", height: "100%", position: "relative" }}
+      >
+        <h1 style={{ textAlign: "center", color: "#333" }}>ICPC Mindmap</h1>
+        <Tree
+          data={mindmapData}
+          orientation="vertical"
+          pathFunc="diagonal"
+          translate={translate}
+          zoomable
+          pan
+          collapsible
+          rootNodeClassName="node__root"
+          branchNodeClassName="node__branch"
+          leafNodeClassName="node__leaf"
+          onNodeClick={(nodeDatum) => handleNodeClick(nodeDatum)}
+        />
+      </div>
 
+      {/* Card for selected node */}
       {selectedNode && (
         <div
           ref={cardRef}
@@ -98,12 +87,35 @@ export default function MindmapPage() {
             border: "1px solid #ccc",
             borderRadius: "8px",
             boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-            zIndex: 1000,
+            zIndex: 3,
           }}
         >
-          <h3 style={{ margin: 0, color: "#333" }}>{selectedNode.name}</h3>
+          {/* Close button */}
+          <button
+            onClick={() => setSelectedNode(null)}
+            style={{
+              position: "absolute",
+              top: "5px",
+              right: "5px",
+              background: "#f44336",
+              color: "white",
+              border: "none",
+              borderRadius: "50%",
+              width: "20px",
+              height: "20px",
+              cursor: "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "14px",
+            }}
+          >
+            &times;
+          </button>
+
+          <h3 style={{ margin: 0, color: "#333" }}>{selectedNode?.data.name}</h3>
           <p style={{ marginTop: "5px", color: "#666" }}>
-            {selectedNode.description || "No description available."}
+            {selectedNode?.data.description || "No description available."}
           </p>
         </div>
       )}
